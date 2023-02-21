@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
@@ -103,171 +101,196 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 60),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Ativar bluetooth do smartphone',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Switch(
-                  activeColor: Theme.of(context).colorScheme.primary,
-                  value: _bluetoothState.isEnabled,
-                  onChanged: (bool value) {
-                    future() async {
-                      if (value) {
-                        await FlutterBluetoothSerial.instance.requestEnable();
-                      } else {
-                        await FlutterBluetoothSerial.instance.requestDisable();
-                      }
-                      _isButtonUnavailable = true;
-                      await getPairedDevices();
-                      _isButtonUnavailable = false;
-                      if (_connected) {
-                        _disconnect();
-                      }
-                    }
-                    future().then((_) {
-                      setState(() {});
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            Text(
-              'Selecione o dispositivo emparelhado para conectar',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            DropdownButton(
-              items: _getDeviceItems(),
-              onChanged: (value) => setState(() => _device = value!),
-              value: _devicesList.isNotEmpty ? _device : null,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            InkWell(
-              onTap: _isButtonUnavailable ? null : _connected ? _disconnect : _connect,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                  color: _isButtonUnavailable ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _isButtonUnavailable ? 'Conectando...' : _connected ? 'Desconectar' : 'Conectar',
-                        style: Theme.of(context).textTheme.displayMedium,
-                      ),
-                    ),
-                    Icon(
-                      _isButtonUnavailable ? Icons.history_outlined : _connected ? Icons.bluetooth_disabled_rounded : Icons.bluetooth_rounded,
-                      color: Theme.of(context).colorScheme.background,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            Text(
-              'Selecione o andar do elevador',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            InkWell(
-              onTap: _connected ? _sendTwoMessageToBluetooth : null,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '2 Andar',
-                        style: Theme.of(context).textTheme.displayMedium,
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_upward_rounded,
-                      color: Theme.of(context).colorScheme.background,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            InkWell(
-              onTap: _connected ? _sendOneMessageToBluetooth : null,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '1 Andar',
-                        style: Theme.of(context).textTheme.displayMedium,
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_downward_rounded,
-                      color: Theme.of(context).colorScheme.background,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            Text(
-              'Último retorno do serial',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.tertiary,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Row(
+            Expanded(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    serialText ?? 'Nenhum',
+                    'Ativar bluetooth do smartphone',
                     style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Switch(
+                        activeColor: Theme.of(context).colorScheme.primary,
+                        value: _bluetoothState.isEnabled,
+                        onChanged: (bool value) {
+                          future() async {
+                            if (value) {
+                              await FlutterBluetoothSerial.instance.requestEnable();
+                            } else {
+                              await FlutterBluetoothSerial.instance.requestDisable();
+                            }
+                            _isButtonUnavailable = true;
+                            await getPairedDevices();
+                            _isButtonUnavailable = false;
+                            if (_connected) {
+                              _disconnect();
+                            }
+                          }
+                          future().then((_) {
+                            setState(() {});
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Text(
+                    'Selecione o dispositivo emparelhado para conectar',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownButton(
+                    items: _getDeviceItems(),
+                    onChanged: (value) => setState(() => _device = value!),
+                    value: _devicesList.isNotEmpty ? _device : null,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  InkWell(
+                    onTap: _isButtonUnavailable ? null : _connected ? _disconnect : _connect,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: _isButtonUnavailable ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _isButtonUnavailable ? 'Conectando...' : _connected ? 'Desconectar' : 'Conectar',
+                              style: Theme.of(context).textTheme.displayMedium,
+                            ),
+                          ),
+                          Icon(
+                            _isButtonUnavailable ? Icons.history_outlined : _connected ? Icons.bluetooth_disabled_rounded : Icons.bluetooth_rounded,
+                            color: Theme.of(context).colorScheme.background,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Text(
+                    'Selecione o andar do elevador',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  InkWell(
+                    onTap: _connected ? _sendTwoMessageToBluetooth : null,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '2 Andar',
+                              style: Theme.of(context).textTheme.displayMedium,
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_upward_rounded,
+                            color: Theme.of(context).colorScheme.background,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  InkWell(
+                    onTap: _connected ? _sendOneMessageToBluetooth : null,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '1 Andar',
+                              style: Theme.of(context).textTheme.displayMedium,
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_downward_rounded,
+                            color: Theme.of(context).colorScheme.background,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Text(
+                    'Último retorno do serial',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.tertiary,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          serialText ?? 'Nenhum',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Column(
+              children: [
+                Text(
+                  'UFPR - TADS',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  'Embarcados & IoT',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  'David - Eduardo - Laerte',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
             ),
           ],
         ),
